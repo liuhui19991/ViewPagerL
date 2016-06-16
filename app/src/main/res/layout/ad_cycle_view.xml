@@ -24,7 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="@color/white"
         android:padding="15dp"
         android:layout_above="@+id/viewGroup"
         android:layout_alignParentLeft="true"
