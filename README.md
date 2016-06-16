@@ -1,0 +1,3 @@
+# ViewPagerL
+自己封装的一个ViewPager
+如果有问题可将IntegerInteger.MAX_VALUE更换成一个比较大的数字,封装的类为ViewPagerCycle
