@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class ViewPagerCycle extends LinearLayout {
     private MyImageCyclePageAdapter mPageAdapter;
-    private int count = Integer.MAX_VALUE;
+    private int count = 10000;//数字不能太大,太大会ANR
     private Context mContext;
     private ImageView mRedPoint;
     private ViewPager mViewPager;
@@ -140,12 +140,12 @@ public class ViewPagerCycle extends LinearLayout {
 
     private void initData() {
 
-        LinearLayout.LayoutParams params;
+        LayoutParams params;
         for (int i = 0; i < mList.size(); i++) {
             //每循环一次要向linearlayout里面添加一个点的view对象
             ImageView grePoint = new ImageView(mContext);
             grePoint.setImageResource(R.drawable.shape_point_gre);
-            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             if (i != 0) {//当前不是第一个点,需要设置边距
                 params.leftMargin = 8;
             }
@@ -191,7 +191,7 @@ public class ViewPagerCycle extends LinearLayout {
         public Object instantiateItem(ViewGroup container, final int position) {
             ImageView iv = mList.get(position % mList.size());
             iv.setTag("设置TAG");
-            iv.setOnClickListener(new View.OnClickListener() {
+            iv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mViewpagerCycleListener.onClick(position, v);
