@@ -16,16 +16,15 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.List;
 
 /**
  * Created by liuhui on 2016/6/15.
  */
-public class ViewPagerCycle extends LinearLayout{
-    private static final String TAG = "MainActivity";
+public class ViewPagerCycle extends LinearLayout {
     private MyImageCyclePageAdapter mPageAdapter;
+    private int count = Integer.MAX_VALUE;
     private Context mContext;
     private ImageView mRedPoint;
     private ViewPager mViewPager;
@@ -39,18 +38,19 @@ public class ViewPagerCycle extends LinearLayout{
     public ViewPagerCycle(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
-        LayoutInflater.from(context).inflate(R.layout.viewpagercycle,this);
+        LayoutInflater.from(context).inflate(R.layout.viewpagercycle, this);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mLinearLayout = (LinearLayout) findViewById(R.id.ll_point);
         mRedPoint = (ImageView) findViewById(R.id.iv_red_point);
     }
 
 
-    public void setImageResource(List list,ViewpagerCycleListener listener) {
+    public void setImageResource(List list, ViewpagerCycleListener listener) {
         mList = list;
         mViewpagerCycleListener = listener;
         initView();
     }
+
     private void initView() {
         if (mHandler == null) {
             mHandler = new Handler() {
@@ -84,13 +84,28 @@ public class ViewPagerCycle extends LinearLayout{
              */
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-               /* int leftMargin;
-                if (position % mList.size() == 1) {
-                    leftMargin = (int) (mPointDis * (position % mList.size() + positionOffset));
+                int leftMargin;
+                leftMargin = (int) (mPointDis * (position % mList.size() + positionOffset));
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRedPoint.getLayoutParams();
+                mRedPoint.setImageResource(R.drawable.shape_point_red);
+                if (position % mList.size() == (mList.size() - 1) && (position + 1) % mList.size() == 0) {//当移动到最后一个点的时候就不让小红点移动了
+                    params.leftMargin = mPointDis * (position % mList.size());
                 } else {
-                    leftMargin = (int) (mPointDis * (position % mList.size() + positionOffset));
-
+                    params.leftMargin = leftMargin;
                 }
+                mRedPoint.setLayoutParams(params);
+            }
+
+            /**
+             * 当viewpager被选中时候调用的方法
+             *让指示点不移动
+             * @param position 移动到的位置
+             */
+            @Override
+            public void onPageSelected(int position) {
+              /*  int newposition = position % mList.size();
+                int leftMargin = newposition*mPointDis;
+                previousposition = newposition;//用完之后把position赋值给previousposition就是上一个viewpageer所在的地方了
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRedPoint.getLayoutParams();
                 mRedPoint.setImageResource(R.drawable.shape_point_red);
                 params.leftMargin = leftMargin;
@@ -98,25 +113,9 @@ public class ViewPagerCycle extends LinearLayout{
             }
 
             /**
-             * 当viewpager被选中时候调用的方法
-             *
-             * @param position
-             */
-            @Override
-            public void onPageSelected(int position) {
-                int newposition = position % mList.size();
-                int leftMargin = newposition*mPointDis;
-                previousposition = newposition;//用完之后把position赋值给previousposition就是上一个viewpageer所在的地方了
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRedPoint.getLayoutParams();
-                mRedPoint.setImageResource(R.drawable.shape_point_red);
-                params.leftMargin = leftMargin;
-                mRedPoint.setLayoutParams(params);
-            }
-
-            /**
              * 当viewpage状态改变时候调用的方法
              *
-             * @param state
+             * @param state 滑动状态
              */
             @Override
             public void onPageScrollStateChanged(int state) {
@@ -133,17 +132,17 @@ public class ViewPagerCycle extends LinearLayout{
                 }
             }
         });
-        int m = Integer.MAX_VALUE / 2 % mList.size();
-        int currentpager = Integer.MAX_VALUE / 2 - m;
+        int m = count / 2 % mList.size();
+        int currentpager = count / 2 - m;
         //设置当前显示的条目
         mViewPager.setCurrentItem(currentpager);
     }
 
     private void initData() {
 
-            int[] images = {R.mipmap.a, R.mipmap.b, R.mipmap.c, R.mipmap.d, R.mipmap.e,};
-            LinearLayout.LayoutParams params;
-            for (int i = 0; i < images.length; i++) {
+        int[] images = {R.mipmap.a, R.mipmap.b, R.mipmap.c, R.mipmap.d, R.mipmap.e,};
+        LinearLayout.LayoutParams params;
+        for (int i = 0; i < images.length; i++) {
             //每循环一次要向linearlayout里面添加一个点的view对象
             ImageView grePoint = new ImageView(mContext);
             grePoint.setImageResource(R.drawable.shape_point_gre);
@@ -152,10 +151,10 @@ public class ViewPagerCycle extends LinearLayout{
                 params.leftMargin = 8;
             }
             grePoint.setLayoutParams(params);
-                if (mLinearLayout != null){
+            if (mLinearLayout != null) {
 
-                    mLinearLayout.addView(grePoint);
-                }
+                mLinearLayout.addView(grePoint);
+            }
         }
     }
 
@@ -167,7 +166,7 @@ public class ViewPagerCycle extends LinearLayout{
          */
         @Override
         public int getCount() {
-            return Integer.MAX_VALUE;
+            return count;
         }
 
         /**
@@ -196,7 +195,7 @@ public class ViewPagerCycle extends LinearLayout{
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mViewpagerCycleListener.onClick(position,v);
+                    mViewpagerCycleListener.onClick(position, v);
                 }
             });
             container.addView(iv);
@@ -204,21 +203,18 @@ public class ViewPagerCycle extends LinearLayout{
         }
     }
 
-    private void setmViewpagerCycleListener(ViewpagerCycleListener listener) {
-        mViewpagerCycleListener = listener;
-    }
     public interface ViewpagerCycleListener {
         /**
          * 每个viewpager点击时候调用的方法
          */
-        public void onClick(int position,View imageView);
+        void onClick(int position, View imageView);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_UP) {
             mHandler.sendEmptyMessageDelayed(0, 3000);
-        } else if (ev.getAction() ==MotionEvent.ACTION_CANCEL) {
+        } else if (ev.getAction() == MotionEvent.ACTION_CANCEL) {
             mHandler.sendEmptyMessageDelayed(0, 3000);
         } else {
             mHandler.removeCallbacksAndMessages(null);
