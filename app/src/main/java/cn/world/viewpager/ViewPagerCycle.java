@@ -140,9 +140,8 @@ public class ViewPagerCycle extends LinearLayout {
 
     private void initData() {
 
-        int[] images = {R.mipmap.a, R.mipmap.b, R.mipmap.c, R.mipmap.d, R.mipmap.e,};
         LinearLayout.LayoutParams params;
-        for (int i = 0; i < images.length; i++) {
+        for (int i = 0; i < mList.size(); i++) {
             //每循环一次要向linearlayout里面添加一个点的view对象
             ImageView grePoint = new ImageView(mContext);
             grePoint.setImageResource(R.drawable.shape_point_gre);
