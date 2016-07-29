@@ -12,12 +12,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List mList;
+    private ViewPagerCycle vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ViewPagerCycle vp = (ViewPagerCycle) findViewById(R.id.vp);
+        vp = (ViewPagerCycle) findViewById(R.id.vp);
         int[] images = {R.mipmap.a, R.mipmap.b, R.mipmap.c, R.mipmap.d, R.mipmap.e,};
         ImageView iv;
         mList = new ArrayList<>();
@@ -34,8 +35,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, string + "位置" + position, Toast.LENGTH_SHORT).show();
             }
         });
-
+        vp.startImageCycle();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        vp.startImageCycle();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        vp.stopImageCycle();
+    }
 }

@@ -30,9 +30,15 @@ public class ViewPagerCycle extends LinearLayout {
     private ViewPager mViewPager;
     private List<ImageView> mList;
     private LinearLayout mLinearLayout;
-    private int previousposition = 0;//前一个被选中的position的位置
+    /**
+     * 前一个被选中的position的位置
+     */
+    private int previousposition = 0;
     private Handler mHandler;
-    private int mPointDis; //两点之间的距离
+    /**
+     * 两点之间的距离
+     */
+    private int mPointDis;
     private ViewpagerCycleListener mViewpagerCycleListener;
 
     public ViewPagerCycle(Context context, AttributeSet attrs) {
@@ -51,6 +57,21 @@ public class ViewPagerCycle extends LinearLayout {
         initView();
     }
 
+    /**
+     * 暂停轮播—用于节省资源
+     */
+    public void stopImageCycle() {
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
+    /**
+     * 开始轮播
+     */
+    public void startImageCycle() {
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.sendEmptyMessageDelayed(0, 3000);
+    }
+
     private void initView() {
         if (mHandler == null) {
             mHandler = new Handler() {
@@ -61,7 +82,7 @@ public class ViewPagerCycle extends LinearLayout {
                     mHandler.sendEmptyMessageDelayed(0, 3000);//发送延时3秒的消息
                 }
             };
-            mHandler.sendEmptyMessageDelayed(0, 3000);//发送延时3秒的消息
+//            mHandler.sendEmptyMessageDelayed(0, 3000);//发送延时3秒的消息
         }
 
         mRedPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -78,6 +99,7 @@ public class ViewPagerCycle extends LinearLayout {
         //设置默认选中的点和图片
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             /**
+             * 这个方法中的代码全部注掉后可以实现,指示点不移动
              * @param position             当前位置
              * @param positionOffset       移动偏移百分比
              * @param positionOffsetPixels
@@ -103,13 +125,14 @@ public class ViewPagerCycle extends LinearLayout {
              */
             @Override
             public void onPageSelected(int position) {
-              /*  int newposition = position % mList.size();
-                int leftMargin = newposition*mPointDis;
+                int newposition = position % mList.size();
+                int leftMargin = newposition * mPointDis;
                 previousposition = newposition;//用完之后把position赋值给previousposition就是上一个viewpageer所在的地方了
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mRedPoint.getLayoutParams();
                 mRedPoint.setImageResource(R.drawable.shape_point_red);
                 params.leftMargin = leftMargin;
-                mRedPoint.setLayoutParams(params);*/
+                mRedPoint.setLayoutParams(params);
+
             }
 
             /**
@@ -139,8 +162,10 @@ public class ViewPagerCycle extends LinearLayout {
     }
 
     private void initData() {
-
         LayoutParams params;
+        if (mLinearLayout != null) {
+            mLinearLayout.removeAllViews();
+        }
         for (int i = 0; i < mList.size(); i++) {
             //每循环一次要向linearlayout里面添加一个点的view对象
             ImageView grePoint = new ImageView(mContext);
@@ -151,7 +176,6 @@ public class ViewPagerCycle extends LinearLayout {
             }
             grePoint.setLayoutParams(params);
             if (mLinearLayout != null) {
-
                 mLinearLayout.addView(grePoint);
             }
         }
