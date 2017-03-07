@@ -4,3 +4,5 @@
 如果有问题可将IntegerInteger.MAX_VALUE更换成一个比较大的数字,封装的类为ViewPagerCycle
 
 ImageCycleView这一个比较稳定
+
+有小红点移动功能
